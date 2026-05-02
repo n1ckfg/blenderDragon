@@ -18,7 +18,7 @@ graph TD
 
 ## 1. Blender Addon (`__init__.py`)
 A Python script that integrates natively into Blender as an Import-Export addon.
-- **Functionality**: Reads animation fcurve keyframe points (specifically location and rotation data representing `vTRACK`, `vTILT`, and `vPAN` movement axes) from the selected object.
+- **Functionality**: Reads animation fcurve keyframe points (specifically location and rotation data representing `vTRACK`, `vTILT`, and `vPAN` movement axes) from the selected object. It supports both legacy (Blender <= 4.2) and modern Slotted Actions (Blender 4.3+) APIs for accessing F-Curves.
 - **Output**: Exports a raw `.csv` file containing the timeline array index and coordinate values.
 
 ## 2. Node.js Backend Server (`server.js`)
