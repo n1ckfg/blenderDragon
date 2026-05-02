@@ -1,26 +1,26 @@
-"""Este script exporta los valores de los keyframes a CSV, encabezado lleva nombre componente e Index"""
-"""Esta pensado para convertir datos de Keyframes a MOCO de Dragonframe"""
+"""This script exports the keyframe values to CSV, header has component name and Index"""
+"""It is intended to convert Keyframe data to Dragonframe MOCO"""
 
-#Importamos modulos
+#Import modules
 import bpy
 import csv
 
-#variable con el objeto en contexto de Blender
+#variable with the object in Blender context
 ob = bpy.context.object
 
-#Condicionales para que se ejecute si no estan vacíos
+#Conditionals to execute if not empty
 if ob is not None:
     if ob.animation_data is not None and ob.animation_data.action is not None:
         
         
-        #Datos de animacion en FCurves. Estos solo van a 
+        #Animation data in FCurves. These only go to 
         action = ob.animation_data.action   
         
-        #Abrimos el archivo CSV para guardar datos. Ingresar ruta del directorio.
+        #We open the CSV file to save data. Enter directory path.
         with open('/Users/mauricio/Desktop/csv.csv','w',encoding='UTF8') as f:
         
-            #Con Loop "For" recorremos el objeto y los datos de las FCurves guardados por Blender.
-            #Imprime datos para X,Y,Z con nombre componente e index.
+            #With "For" Loop we iterate the object and FCurves data saved by Blender.
+            #Prints data for X,Y,Z with component name and index.
             for fcu in action.fcurves:
                 
                 writer = csv.writer(f)
@@ -32,18 +32,4 @@ if ob is not None:
                     writer = csv.writer(f)
                     writer.writerow(kp.co[:])
                     
-            print("Datos exportados a CSV con éxito")
-
-                        
-                        
-
-
-
-
-
-
-
-
-       
-
-
+            print("Data exported to CSV successfully")

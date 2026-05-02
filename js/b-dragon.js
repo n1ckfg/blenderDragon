@@ -1,4 +1,4 @@
-//Este modulo con logica lee CSV, transforma a stream y devuelve final% array con arrays de datos keyframes 
+//This logic module reads CSV, transforms it to stream and finally returns an array with arrays of keyframe data 
 const fs = require('fs');
 const { parse } = require('csv-parse');
 const parser = parse(
@@ -16,29 +16,29 @@ const res = require('express/lib/response');
 var express = require('express')
 var router = express.Router()
 
-/*Organizamos todo dentro de un Router. Esto permite tomar variables directo
-desde Fetch ahorrando problema de traspaso de Server a un Modulo*/
+/*We organize everything inside a Router. This allows taking variables directly
+from Fetch saving the problem of transferring from Server to a Module*/
 router.post('/b-dragon', function(req,res){
 
-    //Pasamos lo que estaba en metodo POST desde server.js
+    //Pass what was in POST method from server.js
     //res.sendFile(__dirname + '/public/html/index.html');
 
     try {
     var arrFetch = req.body.file
-    var dir = req.body.dir_export//Definimos Scope mas amplio por fuera para usarlo en b-dragon.js
+    var dir = req.body.dir_export//Define broader scope outside to use it in b-dragon.js
 
-        //Variable contenedora array
+        //Array container variable
         const results = [];
 
-        //Creamos la función para leer CSV usando CSV-Parser
+        //Create the function to read CSV using CSV-Parser
         function csvDataDragon() {  
       
             function cargaDatosExp() {
-            //Reformulamos funcion para dividor array del lector al tiro   
+            //Reformulate function to divide array from the reader immediately   
                 function csvToDragonLineal() {
 
-                    //Probamos simplificar funcion que crea array multidimensional
-                    //Aqui contenemos todos los datos
+                    //Try to simplify function that creates multidimensional array
+                    //Here we contain all the data
                     /*
                     let file = results;
                     var arr = results.toString().split(",");
@@ -49,24 +49,24 @@ router.post('/b-dragon', function(req,res){
                       });
                     */
                     //var arr = arrNum;
-                    var arr2 = JSON.parse(arrFetch)//Parse de datos desde fetch. Era un json
+                    var arr2 = JSON.parse(arrFetch)//Parse data from fetch. It was a json
                     var arr = arr2;
-                    console.log("Vemos que nos carga la variable csv desde fetch")
+                    console.log("See what loads the csv variable from fetch")
                     console.log(arr)
 
-        //Valores de vTrack+ segun nomenclatura de Kuper MOCO, traslación en eje X+.
-                    //PosicionX
+        //Values of vTrack+ according to Kuper MOCO nomenclature, translation in X+ axis.
+                    //PositionX
                     var keyMocoPosX =[];
                     var keyMocoCtrlPointPosX =[];
                     var keyMocoCtrlPointPosXRep = []; 
         
                 
-                    //Probamos obtener los valores pero con un loop For con dos variables para el mismo array
+                    //Try getting the values but with a For loop with two variables for the same array
                     for (let i = 0; i < arr.length/3 ; i = i + 2) {
                         
                         
                         const a = arr[i];
-                        const b = (parseFloat(arr[i+1])).toFixed(3);//Este indice obtiene valor anterior a lo recorrido por loop general
+                        const b = (parseFloat(arr[i+1])).toFixed(3);//This index gets the previous value to the one iterated by the general loop
 
                         //textPos.push(element)
                         keyMocoPosX.push(`<scen:points x="${a}" y="${b}" type="5"/>`)
@@ -75,7 +75,7 @@ router.post('/b-dragon', function(req,res){
                         
                     }
 
-                    //Para repetir los puntos de control lo haremos con uniendo arrays y luego quitamos inicio y fin con Pop() y Merge(). Esta Funcion es para vTRACK 
+                    //To repeat the control points we will join arrays and then remove start and end with Pop() and Merge(). This Function is for vTRACK 
                     let run1 = 0, first1 = 0, second1 = 0;
                     const keyMocoCtrlPointPosXWrite = [];
 
@@ -90,37 +90,37 @@ router.post('/b-dragon', function(req,res){
                         }
                         run1++;
                     };
-                    //Le sacamos el inicio y el final
+                    //Remove the start and the end
                     keyMocoCtrlPointPosXWrite.shift()
                     keyMocoCtrlPointPosXWrite.pop()
-                    //Revisamos si tiene el formato requerido
-                    console.log("revisamos el nuevo array, si escribe y tiene puntos de control pos x repetidos")
+                    //Check if it has the required format
+                    console.log("check the new array, if it writes and has repeated x pos control points")
                     console.log(keyMocoCtrlPointPosXWrite);
 
-        //Fin reformulacion para vTRACK. Pruebas unitarias ok.
+        //End reformulation for vTRACK. Unit tests ok.
 
 
-        //Desarrollamos funcion para leer rotacion en eje X o sea movimiento vTILT segun nomenclatura de Kuper MOCO
+        //Develop function to read rotation in X axis or vTILT movement according to Kuper MOCO nomenclature
                 
-                    //Variable con valor a multiplicar para convertir Radianes a Grados.
+                    //Variable with multiplier value to convert Radians to Degrees.
                     const convertRad = 180/Math.PI;
         
-                    //Variables para datos rot X
-                    console.log("Valores rotacion X")
+                    //Variables for X rot data
+                    console.log("X rotation values")
                     var keyMocoRotX =[];
                     var keyMocoCtrlPointRotX =[];
                     var keyMocoCtrlPointRotXRep = []; 
 
-                    //Esta funcion es para valores de rotacion eje x. vTILT
+                    //This function is for x axis rotation values. vTILT
                     
                     for (let i = arr.length/3; i < arr.length/3 + (arr.length/3); i = i + 2) {
                     
                         let resp = arr[i];
                         
-                        let a = resp == 0 ? 1: resp;//Ternary. Si la respuesta el igual a 0, entonces cambiar a 1 sino es igual a respuesta
-                        let b = ((parseFloat(arr[i+1])) * convertRad).toFixed(3);//Este indice obtiene valor anterior a lo recorrido por loop general
+                        let a = resp == 0 ? 1: resp;//Ternary. If the response equals 0, then change to 1 else it equals the response
+                        let b = ((parseFloat(arr[i+1])) * convertRad).toFixed(3);//This index gets the previous value to the one iterated by the general loop
                 
-                        console.log("Revisamos el ternario de vTILT")
+                        console.log("Check the ternary of vTILT")
                         console.log(a)
                         //textPos.push(element)
                         keyMocoRotX.push(`<scen:points x="${a}" y="${b}" type="5"/>`)
@@ -129,8 +129,8 @@ router.post('/b-dragon', function(req,res){
                         
                     };
                 
-                    //Para repetir los puntos de control lo haremos uniendo arrays y luego quitamos inicio y fin con Pop() y Merge(). Esto para eje X. 
-                    let run2 = 0, first2 = 0, second2 = 0;//Ya estan declaradas arriba estas variables
+                    //To repeat the control points we will join arrays and then remove start and end with Pop() and Merge(). This for X axis. 
+                    let run2 = 0, first2 = 0, second2 = 0;//These variables are already declared above
                     const keyMocoCtrlPointRotXWrite = [];
 
                     while(run2 < keyMocoCtrlPointRotX.length + keyMocoCtrlPointRotXRep.length) {
@@ -145,30 +145,30 @@ router.post('/b-dragon', function(req,res){
                         run2++;
                     };
                     
-                    //Le sacamos el inicio y el final
+                    //Remove the start and the end
                     keyMocoCtrlPointRotXWrite.shift()
                     keyMocoCtrlPointRotXWrite.pop()
-                    //Revisamos si tiene el formato requerido
-                    console.log("revisamos el nuevo array, si tiene puntos de control rot x repetidos");
+                    //Check if it has the required format
+                    console.log("check the new array, if it has repeated x rot control points");
                     console.log(keyMocoCtrlPointRotXWrite);
 
-        //Desarrollamos la funcion para procesar rotación en eje Z o sea movimiento vPAN segun nomenclatura de Kuper MOCO
-                    //Declaramos las variables para guardar datos rot Z
+        //Develop the function to process rotation in Z axis or vPAN movement according to Kuper MOCO nomenclature
+                    //Declare the variables to save Z rot data
                 
                     var keyMocoRotZ =[];
                     var keyMocoCtrlPointRotZ =[];
                     var keyMocoCtrlPointRotZRep = []; 
                 
-                    //Funcion para obtener valores eje Z. vPAN
+                    //Function to get Z axis values. vPAN
 
                     for (let i =arr.length/3 + (arr.length/3); i < arr.length; i = i + 2) {
                     
                         let resp = arr[i];
                         
-                        let a = resp == 0 ? 1 : resp;//Ternary. Si la respuesta el igual a 0, entonces cambiar a 1 sino es igual a respuesta
-                        let b = ((parseFloat(arr[i+1])) * convertRad).toFixed(3);//Este indice obtiene valor anterior a lo recorrido por loop general
+                        let a = resp == 0 ? 1 : resp;//Ternary. If the response equals 0, then change to 1 else it equals the response
+                        let b = ((parseFloat(arr[i+1])) * convertRad).toFixed(3);//This index gets the previous value to the one iterated by the general loop
                     
-                        console.log("vemos que responde ternario de Rot Z.a")
+                        console.log("see what Z rot ternary responds.a")
                         console.log(a)
                         //textPos.push(element)
                         keyMocoRotZ.push(`<scen:points x="${a}" y="${b}" type="5"/>`)
@@ -177,8 +177,8 @@ router.post('/b-dragon', function(req,res){
                         
                     };
                     
-                    //Para repetir los puntos de control lo haremos con uniendo arrays y luego quitamos inicio y fin con Pop() y Merge(). Esto para eje X. 
-                    let run3 = 0, first3 = 0, second3 = 0;//Ya estan declaradas arriba estas variables
+                    //To repeat the control points we will join arrays and then remove start and end with Pop() and Merge(). This for X axis. 
+                    let run3 = 0, first3 = 0, second3 = 0;//These variables are already declared above
                     const keyMocoCtrlPointRotZWrite = [];
 
                     while(run3 < keyMocoCtrlPointRotZ.length + keyMocoCtrlPointRotZRep.length) {
@@ -192,20 +192,20 @@ router.post('/b-dragon', function(req,res){
                         }
                         run3++;
                     };
-                    //Le sacamos el inicio y el final
+                    //Remove the start and the end
                     keyMocoCtrlPointRotZWrite.shift()
                     keyMocoCtrlPointRotZWrite.pop()
-                    //Revisamos si tiene el formato requerido
-                    console.log("revisamos el nuevo array para Rot Z, si tiene puntos de control repetidos")
+                    //Check if it has the required format
+                    console.log("check the new array for Z rot, if it has repeated control points")
                     console.log(keyMocoCtrlPointRotZWrite);
 
 
-        //Aqui desarrollamos la función que genera el archivo XMLBuilder y lo escribe a un directorio
-        //Esta funcion es para interpolacion lineal de los keyframes, por eso Los puntos de control son los mismos a los keyframes
+        //Here we develop the function that generates the XMLBuilder file and writes it to a directory
+        //This function is for linear interpolation of the keyframes, therefore the control points are the same as the keyframes
 
                     function arcmWriter() {
 
-                        //Esta funcion escribe los valores de los 3 componentes, o sea TRACK, TILT y PAN.      
+                        //This function writes the values of the 3 components, that is TRACK, TILT and PAN.      
                         const root =`
                         <?xml version="1.0" encoding="UTF-8"?>
                             <scen:scene xmlns:scen="http://caliri.com/motion/scene" cameraOperator="">
@@ -223,26 +223,26 @@ router.post('/b-dragon', function(req,res){
                                 </scen:axis>
                             </scen:scene>`  
 
-                            //Usamos el metodo join() para elimimar las comas de array
-                            // Convertimos a XML string
+                            //We use the join() method to remove commas from array
+                            // Convert to XML string
                             const xml = create(root)
                             const xmlExport = xml.end({ prettyPrint: true })
                             console.log(xmlExport)
                             
 
-                            //Escribimos el archivo finalmente .ARCM   
+                            //We finally write the .ARCM file   
                             fs.writeFile(`${dir}.arcm`, xmlExport, (err) => {
                                 if (err) throw err;
-                                console.log('Archivo .arcm escrito!');
+                                console.log('File .arcm written!');
                                 //console.log(fs.readFileSync("/Users/mauricio/Desktop/arcm/movInterpLineal2.arcm","utf8"))
                                 });    
                             }; 
                         
-                            arcmWriter();//Autoejecutamdos la funcion que toma los datos y los escribe. Fin logica.         
+                            arcmWriter();//Self-execute the function that takes the data and writes it. End logic.         
                     };
 
-                var arr = results //metemos en la variable array los resultados de la lectura del CSV
-                //console.log("resultados de arr mas afuera. NO procesados por Loop For")
+                var arr = results //put in the array variable the results of reading the CSV
+                //console.log("arr results further out. NOT processed by For Loop")
                 //console.log(arr)
                 csvToDragonLineal()
             }
@@ -257,5 +257,5 @@ router.post('/b-dragon', function(req,res){
     res.end()
 })
 
-//Exportamos el router
+//Export the router
 module.exports =  router;

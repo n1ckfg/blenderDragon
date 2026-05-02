@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;500;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,500;1,100;1,500&display=swap');
 
-/*--------Reglas generales---------*/
+/*--------General rules---------*/
 :root {
     --verde-claro: #0CBD79;
     --rojo-titulo: #FF210B;
@@ -9,7 +9,7 @@
     --hover-btn:#cebb0d;
     --negro:#000000;
     --gris: #7a7a78;
-    /*Prueba paleta*/
+    /*Palette test*/
     --grisOscuro:#0e181d;
     --gris_Luminoso: #a8bec9;
     --gris18xciento:#484848;
@@ -26,9 +26,9 @@ body {
     width: 800px;
 }
 
-/*--------Reglas Específicas----------*/
+/*--------Specific rules----------*/
 
-/*Contenedor principal app*/
+/*Main app container*/
 
 .base-btn-graph{
     width: 80%;
@@ -43,7 +43,7 @@ body {
     box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
 }
 
-/*Grafico*/
+/*Graph*/
 canvas {
     background-color: rgba(47, 152, 208, 0.0);
     color: #cda744;
@@ -62,7 +62,7 @@ canvas {
     border: none;
 }
 
-/*Elementos componentes app*/
+/*App component elements*/
 .contenedor-titulo{
     width: 100%;
     height: 100px;
@@ -132,7 +132,7 @@ canvas {
     display: flex;
     flex-direction: row;
 }
-/* Contenedor drag and drop and button */
+/* Drag and drop and button container */
 .input-btn{
     display: flex;
     flex-direction: row;
@@ -290,7 +290,7 @@ input[type=checkbox]{
 }
 
 
-/*Seccion arrastre y boton-controles*/
+/*Drag and button-controls section*/
 #btn-procesar{
     background-color: var(--rojo-titulo);
     color: var(--blanco-fondo);
@@ -340,5 +340,3 @@ input[type=checkbox]{
     font-weight: normal;
     font-weight: 100;
 }
-
-  

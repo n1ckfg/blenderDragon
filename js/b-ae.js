@@ -1,15 +1,15 @@
-/*La logica tiene que convertir el String proveniente desde el frontend
-a un CSV con 3 columnas, con todos los keyframes. Que corresponden a los 3 ejes
-de movimiento o vTRACK, vTILT, vPAN en nomenclatura KUPER Motion Control.
-Ese CSV. (sin encabezados) sera interpretados en Adobe After Effects como
-1 Fila == 1 Frame, por lo mismo debe venir "Baked" desde Blender (todos los frames con un keyframe).
-Para hacer eso AE usa los scripts parte del set de integracion de softwares.
-Asi completamos la integración unidireccional entre Blender 3D ==> App BlenderConvert ==> Dragonframe, After Effects.
+/*The logic has to convert the String coming from the frontend
+to a CSV with 3 columns, with all the keyframes. That correspond to the 3 axes
+of movement or vTRACK, vTILT, vPAN in KUPER Motion Control nomenclature.
+That CSV (without headers) will be interpreted in Adobe After Effects as
+1 Row == 1 Frame, therefore it must come "Baked" from Blender (all frames with a keyframe).
+To do that AE uses scripts part of the software integration set.
+Thus we complete the unidirectional integration between Blender 3D ==> App BlenderConvert ==> Dragonframe, After Effects.
 */
 
 
-//Copiamos la funcion desde b-dragon
-//Este modulo con logica lee CSV, transforma a stream y devuelve final% array con arrays de datos keyframes 
+//Copy the function from b-dragon
+//This logic module reads CSV, transforms it to stream and finally returns an array with arrays of keyframe data 
 const fs = require('fs');
 var express = require('express')
 var router = express.Router()
@@ -19,19 +19,19 @@ router.post('/b-ae', function(req,res){
 
     try {
     var arrFetch = req.body.file
-    var dir = req.body.dir_export//Definimos Scope mas amplio por fuera para usarlo en b-dragon.js
+    var dir = req.body.dir_export//Define broader scope outside to use it in b-dragon.js
 
-        //Variable contenedora array
+        //Array container variable
         const results = [];
 
-        //Creamos la función para leer CSV usando CSV-Parser
+        //Create the function to read CSV using CSV-Parser
         function csvDataAe() {  
       
             function cargaDatosExp() { 
 
-                    var arr2 = JSON.parse(arrFetch)//Parse de datos desde fetch. Era un json
+                    var arr2 = JSON.parse(arrFetch)//Parse data from fetch. It was a json
                     var arr = arr2;
-                    console.log("Stream con Fetch para ruta AE-Revisamos que nos captura")
+                    console.log("Stream with Fetch for AE route-Check what it captures")
                     console.log(arr)
 
         //vTrack+ 
@@ -48,19 +48,19 @@ router.post('/b-ae', function(req,res){
                     console.log(posX)
 
         //vTILT              
-                    //Variable con valor a multiplicar para convertir Radianes a Grados. Blender exporta en Radianes.
+                    //Variable with multiplier value to convert Radians to Degrees. Blender exports in Radians.
                     const convertRad = 180/Math.PI;
         
                     var rotX =[];
 
-                    //Esta funcion es para valores de rotacion eje x. vTILT
+                    //This function is for x axis rotation values. vTILT
                     
                     for (let i = arr.length/3; i < arr.length/3 + (arr.length/3); i = i + 2) {
                     
                         let resp = arr[i];
                         
-                        let a = resp == 0 ? 1: resp;//Ternary. Si la respuesta el igual a 0, entonces cambiar a 1 sino es igual a respuesta
-                        let b = ((parseFloat(arr[i+1])) * convertRad).toFixed(3);//Este indice obtiene valor anterior a lo recorrido por loop general
+                        let a = resp == 0 ? 1: resp;//Ternary. If the response equals 0, then change to 1 else it equals the response
+                        let b = ((parseFloat(arr[i+1])) * convertRad).toFixed(3);//This index gets the previous value to the one iterated by the general loop
                         rotX.push(`${b}`)    
                     };
                     console.log("vTILT - BlenderAE")
@@ -74,14 +74,14 @@ router.post('/b-ae', function(req,res){
                     
                         let resp = arr[i];
                         
-                        let a = resp == 0 ? 1 : resp;//Ternary. Si la respuesta el igual a 0, entonces cambiar a 1 sino es igual a respuesta
-                        let b = ((parseFloat(arr[i+1])) * convertRad).toFixed(3);//Este indice obtiene valor anterior a lo recorrido por loop general
+                        let a = resp == 0 ? 1 : resp;//Ternary. If the response equals 0, then change to 1 else it equals the response
+                        let b = ((parseFloat(arr[i+1])) * convertRad).toFixed(3);//This index gets the previous value to the one iterated by the general loop
                         rotZ.push(`${b}`)       
                     };
                     console.log("vPAN - BlenderAE")
                     console.log(rotZ)
 
-        //Agregamos valores para luego crear un CSV con formato necesario
+        //Add values to then create a CSV with the necessary format
 
                     var arrCsv = [];
                     posX.forEach(agregaColumn);
@@ -90,14 +90,14 @@ router.post('/b-ae', function(req,res){
                         arr[i] = `${item},${rotX[i]},${rotZ[i]}`
                         arrCsv.push(arr[i])
                     };
-                    console.log("Vemos si suma valor al final de cada valor de array")
+                    console.log("See if it adds value at the end of each array value")
                     console.log(arrCsv)
 
-        //Escribir CSV
+        //Write CSV
     
                     function csvWriter() {
 
-                        //Esta funcion escribe los valores de los 3 componentes, o sea TRACK, TILT y PAN.      
+                        //This function writes the values of the 3 components, that is TRACK, TILT and PAN.      
                         
                         var csv = "";
 
@@ -107,12 +107,12 @@ router.post('/b-ae', function(req,res){
                             csv +=  i + "\r\n"
 
                         };
-                        console.log("vemos que empuja a variable csv")
+                        console.log("see what pushes to csv variable")
                         console.log(csv)
 
                         fs.writeFile(`${dir}.csv`, csv, (err) => {
                             if (err) throw err;
-                            console.log('Archivo CSV escrito');
+                            console.log('CSV file written');
                                 //console.log(fs.readFileSync("/Users/mauricio/Desktop/arcm/movInterpLineal2.arcm","utf8"))
                             });    
                         };
@@ -128,7 +128,5 @@ router.post('/b-ae', function(req,res){
     res.end()
 });
 
-//Exportamos el router
+//Export the router
 module.exports =  router;
-
-

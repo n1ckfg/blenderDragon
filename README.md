@@ -17,7 +17,7 @@ V0.3 - Export camera data to Adobe After Effects.
 This export mgJSON data on archive, the the user can rebuild the movement parenting camera to a NULL in After Effects. Only need extra info about sensor size and lens of the camera for setting the same paramenters.
 
 Mauricio Matus F.
-Santiago de Chile, 2 de abril de 2022.
+Santiago de Chile, April 2, 2022.
 
 
 

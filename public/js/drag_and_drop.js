@@ -1,6 +1,6 @@
 //var { raw } = require("express");
 
-//Seleccionando todos los elementos necesarios
+//Selecting all required elements
 const dropArea = document.querySelector(".drag-area"),
 dragText = dropArea.querySelector("header"),
 button = document.querySelector("button"),
@@ -9,7 +9,7 @@ input = dropArea.querySelector("input");
 //This is a global variable
 var file;
 
-//Esta lógica cambia el "form action" para enviar a Ruta ARCM/CSV. Funcion de abajo guarda valor de checkbox en var "route".
+//This logic changes the "form action" to send to ARCM/CSV Route. Function below saves checkbox value in "route" var.
 
 var route =''
 
@@ -17,7 +17,7 @@ document.addEventListener("change", function() {
     
     let a = document.getElementById("ch1")
     let b = document.getElementById("ch2")
-    //texto mensaje a usuario
+    //user message text
     //let texto = document.getElementById("text-option")
     
     
@@ -31,12 +31,12 @@ document.addEventListener("change", function() {
         route = a.value
         document.getElementById("text-option").innerHTML = "arcm";
     } else {
-        console.log("Se necesita click en una opcion para procesar los datos")
+        console.log("A click is required on an option to process the data")
     };
     console.log(a.checked)
     console.log(b.checked)
 });
-console.log("comprobamos si carga la ruta fuera de la funcion switch")
+console.log("checking if route loads outside the switch function")
 console.log(route)
 
 
@@ -56,40 +56,40 @@ input.addEventListener("change", function() {
 //If user drag File Over DragArea
 dropArea.addEventListener("dragover", (event)=> {
     event.preventDefault(); //Preventing default behaviour
-    console.log("Archivo esta sobre DragArea")
+    console.log("File is over DragArea")
     dropArea.classList.add("active");
-    dragText.textContent = "Suelta para cargar archivo";
+    dragText.textContent = "Release to upload file";
 });
 
 //If user leave dragged File from DragArea
 dropArea.addEventListener("dragleave", ()=> {
-    console.log("Archivo esta fuera de DragArea")
+    console.log("File is outside of DragArea")
     dropArea.classList.remove("active");
-    dragText.textContent = "Arrastra y suelta para cargar archivo";
+    dragText.textContent = "Drag and drop to upload file";
 });
 
 
 //If user drop File in DropArea
 dropArea.addEventListener("drop", (event)=> {
     event.preventDefault(); //Preventing default behaviour
-    dragText.textContent = "Archivo cargado";
-    console.log("Archivo es depositado en DragArea")
+    dragText.textContent = "File uploaded";
+    console.log("File is dropped in DragArea")
     /*Getting user select file and [0]
     this mean if user select multiple files then we'll 
     select only the first one*/
     file = event.dataTransfer.files[0];
     let fileType = file.type;
     console.log(fileType)
-    console.log("Vemos lo que carga archivo File definido afuera como variable")
+    console.log("See what loads the File variable defined outside")
     console.log(file)
 
-    //Validamos extension por JS
+    //Validate extension via JS
     let validExtensions = ["text/csv"]
 
     if (validExtensions.includes(fileType)) {
-        //Desde aqui lee archivo para tomar datos para usar en graficos
+        //From here reads file to get data to use in graphs
         let fileReader = new FileReader();//Creating a news Reader Object
-        //console.log("aqui vemos lo que nos carga FileReader luego de validar")
+        //console.log("here we see what FileReader loads after validating")
         //console.log(fileReader)
 
         fileReader.onload = () => {
@@ -97,17 +97,17 @@ dropArea.addEventListener("drop", (event)=> {
             let datos = fileURL.split("\r\n")
             let datos_2 = datos.pop()
             let arr = datos.toString().split(",");
-            console.log("vemos si tenemos arrays de strings unitarios")
+            console.log("see if we have arrays of unit strings")
             console.log(arr)
 
-            //Cuerpo de peticion solo carga input de campo, falta archivo
+            //Request body only loads field input, missing file
             form_id.addEventListener('submit', e => {
-            let file = JSON.stringify(arr);//Convertimos a string para poder enviar con Fetch la variable con Array
-            console.log("Vemos si carga valores de CSV dentro funcion Fetch")
+            let file = JSON.stringify(arr);//Convert to string to be able to send with Fetch the variable with Array
+            console.log("See if it loads CSV values inside Fetch function")
             console.log(file)
             
             e.preventDefault()
-            let form = {file}//Aqui agregamos variable con objeto definida antes y resulto envío ;)
+            let form = {file}//Here we add variable with object defined before and send succeeded ;)
                 new FormData(form_id).forEach((value,key) => form[key] = value)
     
                 fetch(route, {
@@ -122,64 +122,64 @@ dropArea.addEventListener("drop", (event)=> {
                 .catch((err) => console.log(err))  
             })
 
-            //Variables para guardar datos de keyframes
-            const resPosXvTRACK = []; //variables x para grafico
-            const resPosYvTRACK = []; //variables y para grafico
-            const resPosXvTILT = []; //variables x para grafico
-            const resPosYvTILT = []; //variables y para grafico
-            const resPosXvPAN = []; //variables x para grafico
-            const resPosYvPAN = []; //variables y para grafico
+            //Variables to save keyframe data
+            const resPosXvTRACK = []; //x variables for graph
+            const resPosYvTRACK = []; //y variables for graph
+            const resPosXvTILT = []; //x variables for graph
+            const resPosYvTILT = []; //y variables for graph
+            const resPosXvPAN = []; //x variables for graph
+            const resPosYvPAN = []; //y variables for graph
            
-            /*Importante*/
+            /*Important*/
 
-            /*Este loop toma valor largo de array para capturar valor keyframes correspondientes a cantidad de valores
-            asi se ajusta automatico y no hay que introducir valor para que capture los correspondientes.
-            Aplicaremos este mismo en backend para simmplificar funcion y eliminar un valor a introducir en DOM*/
+            /*This loop takes array length value to capture keyframes value corresponding to number of values
+            so it adjusts automatically and there is no need to enter value to capture corresponding ones.
+            We will apply this same in backend to simplify function and remove a value to introduce in DOM*/
             
-            //Keyframes eje X vTRACK
+            //X axis keyframes vTRACK
             for (let a = 0; a < arr.length/3; a = a + 2) {
                 let element = arr[a]
                 resPosXvTRACK.push(element)
             };
 
-            /*Lo mismo que arriba pero probar con lecturas de mas keyframes desde CSV*/
-            //Keyframes eje Y vTRACK
+            /*Same as above but testing with readings of more keyframes from CSV*/
+            //Y axis keyframes vTRACK
             for (let b = 1; b < arr.length/3 + 1; b = b + 2) {
                 let element = arr[b]
                 resPosYvTRACK.push(element)
             };
 
-            //Valor constante para convertir a grados rotacion en radianes
+            //Constant value to convert rotation to degrees in radians
             const convertRad = 180/Math.PI;
 
-            //Keyframes eje X vTILT
+            //X axis keyframes vTILT
             for (let a = arr.length/3; a < arr.length - arr.length/3; a = a + 2) {
                 let element = arr[a]
                 resPosXvTILT.push(element)
             };
 
-            /*Lo mismo que arriba pero probar con lecturas de mas keyframes desde CSV*/
-            //Keyframes eje Y vTILT
+            /*Same as above but testing with readings of more keyframes from CSV*/
+            //Y axis keyframes vTILT
             for (let b = arr.length/3 + 1; b < arr.length - arr.length/3; b = b + 2) {
                 let element = arr[b] * convertRad
                 resPosYvTILT.push(element)
             };
 
-            //Keyframes eje Z vPAN
+            //Z axis keyframes vPAN
             for (let a = arr.length/3 + arr.length/3; a < arr.length ; a = a + 2) {
                 let element = arr[a]
                 resPosXvPAN.push(element)
             };
 
-            /*Lo mismo que arriba pero probar con lecturas de mas keyframes desde CSV*/
-            //Keyframes eje Z vPAN
+            /*Same as above but testing with readings of more keyframes from CSV*/
+            //Z axis keyframes vPAN
             for (let b = arr.length/3 + arr.length/3 + 1; b < arr.length ; b = b + 2) {
                 let element = arr[b] * convertRad
                 resPosYvPAN.push(element)
             };
 
-//Aquí agregaremos la logica de ChartJS
-//Leemos los mismos datos que desde back para generar grafico de movimiento
+//Here we will add the ChartJS logic
+//We read the same data as from back to generate movement graph
 
                 const colorGrilla = '#606060'
 
@@ -188,22 +188,22 @@ dropArea.addEventListener("drop", (event)=> {
 
                 myForm.addEventListener("submit", function (e) {
                     e.preventDefault();   
-                    //Cargamos el .csv y creamos un lector del archivo por Objeto de JS
+                    //We load the .csv and create a file reader by JS Object
                     const input = csvFile.files[0];
                     const reader = new FileReader();
                     
-                    //Definimos que hace la función cuando carga el archivo.csv
+                    //We define what the function does when loading the .csv file
                     reader.onload = function (event) {
                         console.log(event.target.result); // the CSV content as string
                     };
-                    //console.log("Esta respuesta es de frontend - graph.js")
-                    //console.log("Archivo enviado");
-                    //reader.readAsText(input)//aqui hay problema con argumento 1
+                    //console.log("This response is from frontend - graph.js")
+                    //console.log("File sent");
+                    //reader.readAsText(input)//here there is a problem with argument 1
                     //console.log(input)
                 });
 
 
-                //Configuracion
+                //Configuration
                 const labels = resPosXvTRACK;
 
                 const data = {
@@ -255,32 +255,32 @@ dropArea.addEventListener("drop", (event)=> {
                     config
                 );
 
-//Termino logica chart.js
+//End chart.js logic
 
-//Aquí agregaremos la logica de ChartJS02
-//Leemos los mismos datos que desde back para generar grafico de movimiento
+//Here we will add ChartJS02 logic
+//We read the same data as from back to generate movement graph
 
                 const myForm2 = document.getElementById("form_id");
                 const csvFile2 = document.getElementById("csvFile");
 
                 myForm.addEventListener("submit", function (e) {
                     e.preventDefault();
-                    //Cargamos el .csv y creamos un lector del archivo por Objeto de JS
+                    //We load the .csv and create a file reader by JS Object
                     const input = csvFile.files[0];
                     const reader = new FileReader();
                     
-                    //Definimos que hace la función cuando carga el archivo.csv
+                    //We define what the function does when loading the .csv file
                     reader.onload = function (event) {
                         console.log(event.target.result); // the CSV content as string
                     };
-                    //console.log("Esta respuesta es de frontend - graph.js")
-                    //console.log("Archivo enviado");
-                    //reader.readAsText(input)//Tb problema con argumento
+                    //console.log("This response is from frontend - graph.js")
+                    //console.log("File sent");
+                    //reader.readAsText(input)//Also problem with argument
                     //console.log(input)
                 });
 
 
-                //Configuracion
+                //Configuration
                 const labels2 = resPosXvTRACK;
 
                 const data2 = {
@@ -325,24 +325,13 @@ dropArea.addEventListener("drop", (event)=> {
                     config2
                 );
 
-//Termino logica chart.js
+//End chart.js logic
         }
 
-        fileReader.readAsText(file)//faltaba file, archivo de input
+        fileReader.readAsText(file)//was missing file, input file
 
     } else {
-        alert("Esta archivo no es valido!")
+        alert("This file is not valid!")
         dropArea.classList.remove("active")
     }
 });
-
-
-
-
-
-
-
-
-
-
-

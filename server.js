@@ -1,27 +1,27 @@
-//Ambiente de desarrollo. Environment.
+//Development environment.
 if(process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
     
 };
 
-//Importamos los modulos necesarios
+//Import required modules
 let express = require('express')
 let app = express()
 const path = require('path')
 const csv = require('./js/b-dragon.js')
 
 
-//Para leer archivos
+//To read files
 let fs = require('fs')
 const res = require('express/lib/response')
 const csvData = require('./js/b-dragon.js')
 const csvDataDragon = require('./js/b-dragon.js')
 const csvDataAe = require('./js/b-ae.js')
 
-//Definimos puerto escucha
+//Define listening port
 let PORT = 3000
 
-//Publicamos carpeta public completa para terner disponible
+//Publish the entire public folder to make it available
 app.use(express.urlencoded({
     extended: true
 }));
@@ -32,7 +32,7 @@ app.use("/public/css/", express.static(__dirname + '/public/css/'));
 app.use('/public/img/', express.static(__dirname + '/public/img/'));
 app.use('/public/js/', express.static(__dirname + '/public/js/'));
 
-//Rutas
+//Routes
 app.get("/",(req,res) => {
     res.sendFile(__dirname + '/public/html/index.html')
 });
@@ -44,7 +44,7 @@ app.use("/", csvDataDragon);
 
 
 
-//Ejecutamos server
-//app.listen(PORT, () =>{`Server ejecutanto en http://localhost/${PORT}`});
+//Run server
+//app.listen(PORT, () =>{`Server running on http://localhost/${PORT}`});
 app.listen(process.env.PORT || 3000);
-console.log(`ejecutando por http://localhost:${PORT}`)
+console.log(`running on http://localhost:${PORT}`)
