@@ -44,11 +44,42 @@ class EXPORT_OT_dragon_moco(Operator, ExportHelper):
 
         action = ob.animation_data.action
 
+        # Extract F-Curves safely, supporting both Legacy (<=4.2) and Slotted Actions (4.3+)
+        fcurves = []
+        if hasattr(action, "fcurves") and action.fcurves:
+            fcurves = list(action.fcurves)
+        elif hasattr(action, "layers"):
+            # Blender 4.3+ Slotted Actions
+            slot = getattr(ob.animation_data, "action_slot", None)
+            if slot:
+                try:
+                    from bpy_extras import anim_utils
+                    channelbag = anim_utils.action_get_channelbag_for_slot(action, slot)
+                    if channelbag and hasattr(channelbag, "fcurves"):
+                        fcurves = list(channelbag.fcurves)
+                except ImportError:
+                    pass
+                
+                # Fallback manual extraction
+                if not fcurves:
+                    for layer in action.layers:
+                        for strip in layer.strips:
+                            try:
+                                bag = strip.channelbag(slot)
+                                if bag and hasattr(bag, "fcurves"):
+                                    fcurves.extend(list(bag.fcurves))
+                            except Exception:
+                                pass
+
+        if not fcurves:
+            self.report({'ERROR'}, "No F-Curves found in active object's action")
+            return {'CANCELLED'}
+
         try:
             with open(self.filepath, 'w', encoding='UTF8', newline='') as f:
                 writer = csv.writer(f)
 
-                for fcu in action.fcurves:
+                for fcu in fcurves:
                     writer.writerow([fcu.data_path, fcu.array_index])
 
                     for kp in fcu.keyframe_points:
